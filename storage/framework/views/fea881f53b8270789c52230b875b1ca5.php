@@ -45,6 +45,11 @@
             <!-- Appointments will be displayed here -->
             </tbody>
         </table>
+
+
+        <?php echo $data->appends(Input::except('page'))->render(); ?>
+
+
         <script src="<?php echo e(asset('js/app.js')); ?>"></script>
     </body>
 </html>

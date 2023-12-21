@@ -45,6 +45,9 @@
             <!-- Appointments will be displayed here -->
             </tbody>
         </table>
+
+        {{ $data->links() }}
+
         <script src="{{ asset('js/app.js') }}"></script>
     </body>
 </html>

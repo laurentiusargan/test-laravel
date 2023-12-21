@@ -3,12 +3,14 @@
 namespace App\Repositories;
 
 use App\Models\Apointment;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Symfony\Component\Console\Input\Input;
 
 class ReportRepository
 {
-    public function filter(Request $request): Collection|array
+    public function filter(Request $request): LengthAwarePaginator
     {
         $query = Apointment::query()->with(['patient', 'user']);
 
@@ -37,6 +39,6 @@ class ReportRepository
             $query->where('status', $status);
         }
 
-        return $query->get();
+        return $query->paginate($request->query('page'));
     }
 }

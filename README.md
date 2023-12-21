@@ -10,5 +10,6 @@
 <p>After that you must go into container laravel.test with command docker compose exec laravel.test bash</p>
 <p>Run the command for migration php artisan migrate</p>
 <p>Run the import of the csv files with php artisan import:csv</p>
+<p>The csv are stored in the folder storage/app/, and the files must be named as the tables [apointments.csv, patients.csv, users.csv]</p>
 <p>The route for the report is http://localhost/reports</p>
 </p>

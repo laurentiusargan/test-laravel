@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const tableBody = document.getElementById('appointments-body');
                 tableBody.innerHTML = ''; // Clear current table content
 
-                data.forEach(appointment => {
+                data['data'].forEach(appointment => {
                     const row = document.createElement('tr');
                     const dateCell = document.createElement('td');
                     dateCell.textContent = appointment.start_at + ' - ' + appointment.end_at;

@@ -13,18 +13,18 @@ return new class extends Migration
     {
         Schema::create('apointments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('user_id');
-            $table->unsignedInteger('patient_id');
-            $table->unsignedInteger('event_type_id');
-            $table->unsignedInteger('room_id');
+            $table->unsignedInteger('user_id')->index();
+            $table->unsignedInteger('patient_id')->index();
+            $table->unsignedInteger('event_type_id')->index();
+            $table->unsignedInteger('room_id')->index();
             $table->string('room');
             $table->string('title');
-            $table->string('status');
+            $table->string('status')->index();
             $table->string('canceled_at')->nullable();
             $table->string('rescheduled_at')->nullable();
             $table->string('checkin_at')->nullable();
-            $table->string('start_at');
-            $table->string('end_at');
+            $table->string('start_at')->index();
+            $table->string('end_at')->index();
             $table->string('checkout_at')->nullable();
             $table->string('missed_at')->nullable();
         });

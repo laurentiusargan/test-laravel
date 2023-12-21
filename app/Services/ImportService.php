@@ -2,27 +2,77 @@
 
 namespace App\Services;
 
-use Exception;
+use App\Models\Apointment;
+use App\Models\Patient;
+use App\Models\User;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Validation\ValidationException;
 
 class ImportService
 {
     /**
-     * @throws Exception
+     * @throws ValidationException
      */
-    public function importFile(string $file): void
+    public function importData(): void
     {
-        $modelClassName = 'App\Models\\' . ucwords(pathinfo($file, PATHINFO_FILENAME), '_');
-        $model = substr($modelClassName, 0, -1);
+        $filePaths = [
+            'appointments' => storage_path('app/csv_files/apointments.csv'),
+            'patients' => storage_path('app/csv_files/patients.csv'),
+            'users' => storage_path('app/csv_files/users.csv'),
+        ];
 
-        $filePath = 'storage/app/' . $file;
-        if (!file_exists($filePath)) {
-            throw new Exception('File not found.');
+        $expectedHeaders = [
+            'appointments' => Config::get('csv-header.expected_headers.appointments'),
+            'patients' => Config::get('csv-header.expected_headers.patients'),
+            'users' => Config::get('csv-header.expected_headers.users'),
+        ];
+
+        foreach ($filePaths as $type => $filePath) {
+            $this->validateCsvFile($filePath);
+            $this->validateHeaders($filePath, $expectedHeaders[$type]);
+            $this->importCsvData($filePath, $this->getModel($type));
         }
+    }
 
-        $data = array_map('str_getcsv', file($filePath));
+    private function getModel($type)
+    {
+        $models = [
+            'appointments' => Apointment::class,
+            'patients' => Patient::class,
+            'users' => User::class,
+        ];
+
+        return $models[$type];
+    }
+
+    private function validateHeaders($csvFilePath, $expectedHeaders): void
+    {
+        $file = fopen($csvFilePath, 'r');
+        $headers = fgetcsv($file);
+        fclose($file);
+
+        if ($headers !== $expectedHeaders) {
+            throw ValidationException::withMessages([
+                'csv_headers' => 'Invalid headers detected in one or more CSV files.',
+            ]);
+        }
+    }
+
+    private function validateCsvFile($csvFilePath): void
+    {
+        if (!file_exists($csvFilePath) || !is_file($csvFilePath) || pathinfo($csvFilePath, PATHINFO_EXTENSION) !== 'csv') {
+            throw ValidationException::withMessages([
+                'csv_files' => 'One or more files are missing or not in CSV format.',
+            ]);
+        }
+    }
+
+    private function importCsvData($csvFilePath, $model): void
+    {
+        $data = array_map('str_getcsv', file($csvFilePath));
         $header = array_shift($data);
-        $importedData = [];
 
+        $importedData = [];
         foreach ($data as $row) {
             $importedData[] = array_combine($header, $row);
         }

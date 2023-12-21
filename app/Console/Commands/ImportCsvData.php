@@ -18,15 +18,9 @@ class ImportCsvData extends Command
         parent::__construct();
     }
 
-    public function handle(): int
+    public function handle(): void
     {
-        $files = Storage::files('csv_files');
-        foreach ($files as $file) {
-            if (pathinfo($file, PATHINFO_EXTENSION) === 'csv') {
-                $this->importService->importFile($file);
-                $this->info('CSV file imported successfully:' . $file);
-            }
-        }
-        return 0;
+        $this->importService->importData();
+        $this->info('CSV files imported successfully');
     }
 }
