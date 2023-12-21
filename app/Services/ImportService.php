@@ -79,6 +79,16 @@ class ImportService
 
         $chunks = array_chunk($importedData, 1000); // Adjust chunk size as needed
         foreach ($chunks as $chunk) {
+            foreach ($chunk as $item) {
+                dd($item);
+                try {
+                    $model::validate($item);
+                } catch (ValidationException $exception) {
+                    echo 'Validation failed: ' . $exception->getMessage();
+                    return;
+                }
+            }
+
             $model::insert($chunk);
         }
     }

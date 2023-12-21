@@ -5,8 +5,6 @@ namespace App\Repositories;
 use App\Models\Apointment;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Symfony\Component\Console\Input\Input;
 
 class ReportRepository
 {
